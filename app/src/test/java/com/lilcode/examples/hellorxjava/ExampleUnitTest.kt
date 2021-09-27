@@ -1,5 +1,7 @@
 package com.lilcode.examples.hellorxjava
 
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
 
@@ -62,6 +64,26 @@ class ExampleUnitTest {
         /*
         6
         8
+         */
+    }
+
+    @Test
+    fun create_ex1() {
+        val source = Observable.create<String> { emitter ->
+            emitter.onNext("Hello")
+            emitter.onNext("World")
+            emitter.onError(Throwable())
+            emitter.onComplete()
+            emitter.onNext("!")
+        }
+
+        // Consumer 를 통해 구독
+        source.subscribe(System.out::println, Consumer { println("Error!!") })
+
+        /*
+        Hello
+        World
+        Error!!
          */
     }
 
