@@ -6,6 +6,10 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.reactivestreams.Publisher
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -95,6 +99,67 @@ class ExampleUnitTest {
         // 빈 Observable
         val source2 = Observable.empty<String>()
         source2.subscribe(System.out::println)
+    }
+
+    @Test
+    fun convert_ex1() {
+        println("########## fromArray ##########")
+        val itemArray = arrayOf("A", "B", "C")
+        val source = Observable.fromArray(itemArray)
+        source.subscribe(System.out::println)
+
+
+
+    }
+
+    @Test
+    fun convert_ex2() {
+        println("########## fromIterable ##########")
+        val arrayList = ArrayList<String>()
+        arrayList.add("A")
+        arrayList.add("B")
+        arrayList.add("C")
+
+        val source = Observable.fromIterable(arrayList)
+        source.subscribe(System.out::println)
+    }
+
+    @Test
+    fun convert_ex3() {
+        println("########## fromFuture ##########")
+        val future: Future<String> = Executors.newSingleThreadExecutor()
+            .submit<String> {
+                Thread.sleep(5000)
+                return@submit "Hello World!"
+            }
+
+
+        val source = Observable.fromFuture(future)
+        source.subscribe(System.out::println) // 블로킹 되어 기다림
+    }
+
+    @Test
+    fun convert_ex4() { // import org.reactivestreams.Publisher
+        println("########## fromPublisher ##########")
+        val publisher = Publisher<String> { subscriber ->
+            subscriber.onNext("A")
+            subscriber.onNext("B")
+            subscriber.onNext("C")
+            subscriber.onComplete()
+        }
+
+        val source = Observable.fromPublisher(publisher)
+        source.subscribe(System.out::println)
+    }
+
+    @Test
+    fun convert_ex5() {
+        val callable = Callable {
+            "Hello World"
+        }
+
+        val source = Observable.fromCallable(callable)
+        source.subscribe(System.out::println)
     }
 
 }
