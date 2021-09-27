@@ -87,4 +87,14 @@ class ExampleUnitTest {
          */
     }
 
+    @Test
+    fun just_ex1() {
+        val source = Observable.just("Hello", "World")
+        source.subscribe(System.out::println)
+
+        // 빈 Observable
+        val source2 = Observable.empty<String>()
+        source2.subscribe(System.out::println)
+    }
+
 }
