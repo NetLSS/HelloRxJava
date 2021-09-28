@@ -1,5 +1,6 @@
 package com.lilcode.examples.hellorxjava
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.functions.Consumer
@@ -191,4 +192,43 @@ class ExampleUnitTest {
         val singleSrc = Single.just("Hello World")
         val observableSrc = singleSrc.toObservable()
     }
+
+    @Test
+    fun maybe_ex1() {
+        Maybe.create<Int> { emitter ->
+            emitter.onSuccess(100)
+            emitter.onComplete() // 무시됨
+        }
+            .doOnSuccess { item -> println("doOnSuccess1") }
+            .doOnComplete { println("doOnComplete1") }
+            .subscribe(System.out::println)
+
+        Maybe.create<Any> { emitter -> emitter.onComplete() }
+            .doOnSuccess { item -> println("doOnSuccess2") }
+            .doOnComplete { println("doOnComplete2") }
+            .subscribe(System.out::println)
+
+        /*
+        doOnSuccess1
+        100
+        doOnComplete2
+         */
+    }
+
+    @Test
+    fun maybe_ex2() {
+        val src1 = Observable.just(1, 2, 3)
+        val srcMaybe1 = src1.firstElement()
+        srcMaybe1.subscribe(System.out::println)
+
+        val src2 = Observable.empty<Any>()
+        val srcMaybe2 = src2.firstElement()
+        srcMaybe2.subscribe(System.out::println, {throwable -> }, { println("onComplete!")} )
+
+        /*
+        1
+        onComplete!
+         */
+    }
+
 }
