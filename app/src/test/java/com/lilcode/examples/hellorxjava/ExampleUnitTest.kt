@@ -1,6 +1,7 @@
 package com.lilcode.examples.hellorxjava
 
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
@@ -162,4 +163,32 @@ class ExampleUnitTest {
         source.subscribe(System.out::println)
     }
 
+    @Test
+    fun single_ex() {
+        Single.just("Hello World")
+            .subscribe(System.out::println)
+    }
+
+    @Test
+    fun single_ex2() {
+        Single.create<String> { emitter -> emitter.onSuccess("Hello") }
+            .subscribe(System.out::println)
+    }
+
+    @Test
+    fun single_ex3() {
+        // Observable -> Single
+        val src = Observable.just(1, 2, 3)
+
+        val singleSrc1 = src.all { i -> i > 0 }
+        val singleSrc2 = src.first(-1)
+        val singleSrc3 = src.toList()
+    }
+
+    @Test
+    fun single_ex4() {
+        // Single -> Observable
+        val singleSrc = Single.just("Hello World")
+        val observableSrc = singleSrc.toObservable()
+    }
 }
