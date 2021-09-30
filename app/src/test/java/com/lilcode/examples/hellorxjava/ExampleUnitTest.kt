@@ -1,8 +1,8 @@
 package com.lilcode.examples.hellorxjava
 
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.Action
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
@@ -228,6 +228,25 @@ class ExampleUnitTest {
         /*
         1
         onComplete!
+         */
+    }
+
+    @Test
+    fun completable_ex1() {
+        Completable.create { emitter ->
+            // do something here
+            emitter.onComplete()
+        }
+            .subscribe { println("completed1") }
+
+        Completable.fromRunnable{
+            // do something here
+        }
+            .subscribe { println("completed2")}
+
+        /*
+        completed1
+        completed2
          */
     }
 
