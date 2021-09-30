@@ -12,6 +12,7 @@ import org.reactivestreams.Publisher
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -247,6 +248,29 @@ class ExampleUnitTest {
         /*
         completed1
         completed2
+         */
+    }
+
+    @Test
+    fun coldObservable_ex1() {
+        val src = Observable.interval(1, TimeUnit.SECONDS)
+            .apply {
+                subscribe { value -> println("#1: $value") }
+                Thread.sleep(3000)
+                subscribe { value -> println("#2: $value") } // 처음 발행된 아이템 부터 구독됨
+                Thread.sleep(3000)
+            }
+
+        /*
+        #1: 0
+        #1: 1
+        #1: 2
+        #1: 3
+        #2: 0
+        #1: 4
+        #2: 1
+        #1: 5
+        #2: 2
          */
     }
 
