@@ -13,6 +13,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -319,4 +320,22 @@ class ExampleUnitTest {
          */
     }
 
+    @Test
+    fun disposable_ex() {
+        // 유한한 아이템을 발행하는 경우
+        val source = Observable.just("A", "B", "C")
+        val disposable = source.subscribe { o -> println(o) }
+
+        // 무한한 아이템을 발행하는 경우 (메모리 릭 방지를 위해 추가 처리해줄 필요가 있을 수 있다.)
+        val source2 = Observable.interval(1000, TimeUnit.MILLISECONDS)
+        val disposable2 = source2.subscribe(System.out::println)
+        thread(start = true) {
+            try {
+                Thread.sleep(3500)
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+            disposable2.dispose() // 아이템 발행 중단 및 모든 리소스 폐기
+        }
+    }
 }
