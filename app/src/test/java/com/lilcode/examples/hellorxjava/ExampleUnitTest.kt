@@ -274,4 +274,28 @@ class ExampleUnitTest {
          */
     }
 
+    @Test
+    fun publish_connect_ex() {
+        val src = Observable.interval(1, TimeUnit.SECONDS)
+            .publish()
+        src.connect() // connect() 해야 비로소 데이터를 발행
+        src.subscribe { value -> println("#1 : $value") }
+        Thread.sleep(3000)
+        src.subscribe { value -> println("#2 : $value") }
+        Thread.sleep(3000)
+
+        /*
+        #1 : 0
+        #1 : 1
+        #1 : 2
+        #2 : 2 // 동일 시간 아이템 을 발행 받음 (0~1 는 수신 받지 못함)
+        #1 : 3
+        #2 : 3
+        #1 : 4
+        #2 : 4
+        #1 : 5
+        #2 : 5
+         */
+    }
+
 }
