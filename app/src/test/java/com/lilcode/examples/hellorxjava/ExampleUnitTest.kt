@@ -298,4 +298,25 @@ class ExampleUnitTest {
          */
     }
 
+    @Test
+    fun autoConnect_ex() {
+        val src = Observable.interval(100, TimeUnit.MILLISECONDS)
+            .publish()
+            .autoConnect(2)
+        src.subscribe { i -> println("A: $i") }
+        src.subscribe { i -> println("B: $i")}
+        Thread.sleep(500)
+
+        /*
+        A: 0
+        B: 0
+        A: 1
+        B: 1
+        A: 2
+        B: 2
+        A: 3
+        B: 3
+         */
+    }
+
 }
