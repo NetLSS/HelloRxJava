@@ -1,6 +1,7 @@
 package com.lilcode.examples.hellorxjava
 
 import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Action
 import io.reactivex.rxjava3.functions.Consumer
@@ -111,7 +112,6 @@ class ExampleUnitTest {
         val itemArray = arrayOf("A", "B", "C")
         val source = Observable.fromArray(itemArray)
         source.subscribe(System.out::println)
-
 
 
     }
@@ -225,7 +225,7 @@ class ExampleUnitTest {
 
         val src2 = Observable.empty<Any>()
         val srcMaybe2 = src2.firstElement()
-        srcMaybe2.subscribe(System.out::println, {throwable -> }, { println("onComplete!")} )
+        srcMaybe2.subscribe(System.out::println, { throwable -> }, { println("onComplete!") })
 
         /*
         1
@@ -241,10 +241,10 @@ class ExampleUnitTest {
         }
             .subscribe { println("completed1") }
 
-        Completable.fromRunnable{
+        Completable.fromRunnable {
             // do something here
         }
-            .subscribe { println("completed2")}
+            .subscribe { println("completed2") }
 
         /*
         completed1
@@ -305,7 +305,7 @@ class ExampleUnitTest {
             .publish()
             .autoConnect(2)
         src.subscribe { i -> println("A: $i") }
-        src.subscribe { i -> println("B: $i")}
+        src.subscribe { i -> println("B: $i") }
         Thread.sleep(500)
 
         /*
@@ -337,5 +337,31 @@ class ExampleUnitTest {
             }
             disposable2.dispose() // 아이템 발행 중단 및 모든 리소스 폐기
         }
+    }
+
+    @Test
+    fun compositeDisposable_ex() {
+        val source = Observable.interval(1000, TimeUnit.MILLISECONDS)
+        val d1 = source.subscribe(System.out::println)
+        val d2 = source.subscribe(System.out::println)
+        val d3 = source.subscribe(System.out::println)
+        val cd = CompositeDisposable()
+        cd.add(d1)
+        cd.add(d2)
+        cd.add(d3)
+        // cd.addAll(d1,d2,d3)기
+        Thread.sleep(3000)
+        cd.dispose() // 특정 시점에 전부 폐기
+
+        /*
+        0
+        0
+        0
+        1
+        1
+        1
+        2
+        2
+         */
     }
 }
