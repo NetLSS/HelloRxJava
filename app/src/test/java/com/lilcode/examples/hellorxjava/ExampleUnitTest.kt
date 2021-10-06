@@ -13,6 +13,7 @@ import org.junit.Assert.*
 import org.reactivestreams.Publisher
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Observer
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -404,5 +405,18 @@ class ExampleUnitTest {
         #1 time = 2021.10.06 17:26:00
         #2 time = 2021.10.06 17:26:05
          */
+    }
+
+    @Test
+    fun empty_never_ex1() {
+        Observable.empty<String>()
+            .doOnTerminate { println("empty 종료") } // 종료 될 떄 (onComplete 호출 시)
+            .subscribe(System.out::println)
+
+        Observable.never<String>()
+            .doOnTerminate { println("never 종료") }
+            .subscribe(System.out::println)
+
+        // empty 종료
     }
 }
