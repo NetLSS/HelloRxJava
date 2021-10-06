@@ -434,4 +434,14 @@ class ExampleUnitTest {
         3
          */
     }
+
+    @Test
+    fun range_ex() {
+        Observable.range(1,3).subscribe(System.out::println)
+        /*
+        1
+        2
+        3
+         */
+    }
 }
