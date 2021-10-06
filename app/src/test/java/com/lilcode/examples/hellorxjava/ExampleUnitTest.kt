@@ -471,4 +471,56 @@ class ExampleUnitTest {
         30
          */
     }
+
+    @Test
+    fun flatMap_ex() {
+        val src = Observable.just("a", "b", "c")
+        src.flatMap { str -> Observable.just(str + 1, str + 2) }
+            .subscribe(System.out::println)
+
+        println("map 과 차이점?")
+        src.map { str -> Observable.just(str + 1, str + 2) }
+            .subscribe(System.out::println)
+
+        println("map 과 차이점??")
+        src.map { str -> Observable.just(str + 1, str + 2) }
+            .subscribe { it.subscribe(System.out::println) }
+
+        /*
+            a1
+            a2
+            b1
+            b2
+            c1
+            c2
+            map 과 차이점?
+            io.reactivex.rxjava3.internal.operators.observable.ObservableFromArray@5f49b721
+            io.reactivex.rxjava3.internal.operators.observable.ObservableFromArray@488468
+            io.reactivex.rxjava3.internal.operators.observable.ObservableFromArray@a7e66aa
+            map 과 차이점??
+            a1
+            a2
+            b1
+            b2
+            c1
+            c2
+         */
+    }
+
+    @Test
+    fun flatMap_ex2() {
+        Observable.range(2, 8)
+            .flatMap { x -> Observable.range(1, 9) // 다중 for 문 처럼 사용
+                .map { y -> String.format("%d * %d = %d", x, y, x * y) }}
+            .subscribe(System.out::println)
+        /*
+        2 * 1 = 2
+        2 * 2 = 4
+        2 * 3 = 6
+        ...
+        9 * 7 = 63
+        9 * 8 = 72
+        9 * 9 = 81
+         */
+    }
 }
