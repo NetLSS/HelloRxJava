@@ -419,4 +419,19 @@ class ExampleUnitTest {
 
         // empty 종료
     }
+
+    @Test
+    fun interval_ex() {
+        val d = Observable.interval(1, TimeUnit.SECONDS)
+            .subscribe(System.out::println)
+        Thread.sleep(5000)
+        d.dispose()
+
+        /*
+        0
+        1
+        2
+        3
+         */
+    }
 }
