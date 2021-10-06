@@ -444,4 +444,18 @@ class ExampleUnitTest {
         3
          */
     }
+
+    @Test
+    fun timer_ex() {
+        val src = Observable.timer(1, TimeUnit.SECONDS)
+        println("구독!")
+        // 구독 시 1초 뒤에 발행
+        src.subscribe{ event -> println("실행")}
+        Thread.sleep(1100)
+
+        /*
+        구독!
+        실행
+         */
+    }
 }
