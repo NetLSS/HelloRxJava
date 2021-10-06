@@ -458,4 +458,17 @@ class ExampleUnitTest {
         실행
          */
     }
+
+    @Test
+    fun map_ex() {
+        val intSrc = Observable.just(1, 2, 3)
+        val strSrc = intSrc.map { value -> value * 10 }
+        strSrc.subscribe(System.out::println)
+
+        /*
+        10
+        20
+        30
+         */
+    }
 }
