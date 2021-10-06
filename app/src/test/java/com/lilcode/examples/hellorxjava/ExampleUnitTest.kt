@@ -1,6 +1,7 @@
 package com.lilcode.examples.hellorxjava
 
 import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Action
@@ -10,10 +11,13 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.reactivestreams.Publisher
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 /**
@@ -362,6 +366,43 @@ class ExampleUnitTest {
         1
         2
         2
+         */
+    }
+
+    fun convertLongToTime(time: Long): String {
+        val date = Date(time)
+        val format = SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
+        return format.format(date)
+    }
+
+    @Test
+    fun defer_ex1() {
+        val justSrc = Observable.just(System.currentTimeMillis())
+        val deferSrc = Observable.defer { Observable.just(System.currentTimeMillis()) }
+
+        println("#1 now = ${convertLongToTime(System.currentTimeMillis())}")
+
+        try {
+            Thread.sleep(5000)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        println("#2 now = ${convertLongToTime(System.currentTimeMillis())}")
+
+        justSrc.subscribe{ time ->
+            println("#1 time = ${convertLongToTime(time)}")
+        }
+
+        deferSrc.subscribe { time ->
+            println("#2 time = ${convertLongToTime(time)}")
+        }
+
+        /*
+        #1 now = 2021.10.06 17:26:00
+        #2 now = 2021.10.06 17:26:05
+        #1 time = 2021.10.06 17:26:00
+        #2 time = 2021.10.06 17:26:05
          */
     }
 }
